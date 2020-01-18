@@ -1,0 +1,6 @@
+
+.vscode/settings.json
+DataSets/CIC-IDS-2017/Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv
+DataSets/CIC-IDS-2017/Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv
+DataSets/CIC-IDS-2017/Friday-WorkingHours-Morning.pcap_ISCX.csv
+*.csv
