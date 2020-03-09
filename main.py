@@ -20,8 +20,19 @@ attacksCIC = {
 }
 
 #Dictionary of all specific attacksCIC for 2nd dataset
-attacksCIC2nd = {
-
+mappingUNSW = {
+  #attacks
+  "Normal": 0,
+  "Fuzzers": 1,
+  "Reconnaissance": 2,
+  "Shellcode": 3,
+  "Analysis": 4,
+  "Backdoor": 5,
+  "DoS": 6,
+  "Exploits": 7,
+  "Generic": 8,
+  "Worms": 9,
 }
 
-NNcode.NNAnalysis("DataSets\CIC-IDS-2017", attacksCIC)
+#NNcode.CICAnalysis(r"DataSets\CIC-IDS-2017", attacksCIC)
+NNcode.UNSWAnalysis(r"DataSets\UNSW-NB15", mappingUNSW)
