@@ -34,5 +34,5 @@ mappingUNSW = {
   "Worms": 9,
 }
 
-#NNcode.CICAnalysis(r"DataSets\CIC-IDS-2017", attacksCIC)
-NNcode.UNSWAnalysis(r"DataSets\UNSW-NB15", mappingUNSW)
+NNcode.CICAnalysis(r"DataSets\CIC-IDS-2017", attacksCIC)
+#NNcode.UNSWAnalysis(r"DataSets\UNSW-NB15", mappingUNSW)

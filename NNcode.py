@@ -44,6 +44,7 @@ def CICAnalysis(path, attacks):
     colNum = dataset.shape[1]   #79?
     X = dataset.iloc[:,0:(colNum-2)]
     y = dataset.iloc[:,(colNum-1)]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.35)
     print("Now onto the ML code")
     # define the keras model
     model = Sequential()
@@ -56,7 +57,7 @@ def CICAnalysis(path, attacks):
     model.compile(optimizer = adam(learning_rate=0.0005, beta_1=0.9, beta_2=0.999, amsgrad=False),loss='sparse_categorical_crossentropy', metrics =['accuracy'])
     bs = 25
     # fit the keras model on the dataset
-    hist = model.fit(X, y, epochs=50, batch_size=bs, validation_split=0.35)
+    hist = model.fit(X, y, epochs=50, batch_size=bs, validation_data=(X_test,y_test))
     #summarize history for accuracy
     plt.plot(hist.history['accuracy'])
     plt.plot(hist.history['val_accuracy'])
@@ -79,7 +80,7 @@ def UNSWAnalysis(path, mapped):
     os.chdir(path)
     #find files with glob
     fileList = glob.glob("*.csv")
-    mapping = AddToMap(mapped, fileList[0])
+    mapping = AddToMap(mapped, fileList)
     for keys,values in mapping.items():
         print(keys)
         print(values)
@@ -104,6 +105,7 @@ def UNSWAnalysis(path, mapped):
     colNum = dataset.shape[1]   #79?
     X = dataset.iloc[:,0:(colNum-3)]
     y = dataset.iloc[:,(colNum-2)]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.32)
     print("Now onto the ML code")
     # define the keras model
     model = Sequential()
@@ -113,10 +115,10 @@ def UNSWAnalysis(path, mapped):
     model.add(Dense(15, activation='softmax'))
 
     # compile the keras model
-    model.compile(optimizer = adam(learning_rate=0.0005, beta_1=0.9, beta_2=0.999, amsgrad=False),loss='sparse_categorical_crossentropy', metrics =['accuracy'])
-    bs = 25
+    model.compile(optimizer = adam(learning_rate=0.001, beta_1=0.9, beta_2=0.999, amsgrad=False),loss='sparse_categorical_crossentropy', metrics =['accuracy'])
+    bs = 15
     # fit the keras model on the dataset
-    hist = model.fit(X, y, epochs=50, batch_size=bs, validation_split=0.35)
+    hist = model.fit(X, y, epochs=25, batch_size=bs, validation_data=(X_test,y_test))
     #summarize history for accuracy
     plt.plot(hist.history['accuracy'])
     plt.plot(hist.history['val_accuracy'])
@@ -136,8 +138,9 @@ def UNSWAnalysis(path, mapped):
 
 def AddToMap(m, f):
     dataList = []
-    data = pd.read_csv(f, header=0, index_col=0,)
-    dataList.append(data)
+    for file in f:
+        data = pd.read_csv(file, header=0, index_col=0,)
+        dataList.append(data)
     dataset = pd.concat(dataList, axis=0)
     i = 0
     for cell in dataset["proto"]:
