@@ -18,12 +18,11 @@ attacksCIC = {
   "PortScan": 13,
   "DDoS": 14,
 }
-
 #Dictionary of all specific attacksCIC for 2nd dataset
 mappingUNSW = {
   #attacks
-  "Normal": 0,
-  "Fuzzers": 1,
+  "Benign": 0,
+  " Fuzzers": 1,
   "Reconnaissance": 2,
   "Shellcode": 3,
   "Analysis": 4,
@@ -33,6 +32,7 @@ mappingUNSW = {
   "Generic": 8,
   "Worms": 9,
 }
-
-NNcode.CICAnalysis(r"DataSets\CIC-IDS-2017", attacksCIC)
-#NNcode.UNSWAnalysis(r"DataSets\UNSW-NB15", mappingUNSW)
+#Rows to review data and add to dictionary
+UNSWrows = [0,1,2,3,11,45]
+#NNcode.CICAnalysis(r"DataSets\CIC-IDS-2017", attacksCIC)
+NNcode.UNSWAnalysis(r"DataSets\UNSW-NB15", mappingUNSW, UNSWrows)
