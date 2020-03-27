@@ -36,10 +36,3 @@ mappingUNSW = {
 }
 #Columns to review UNSW data and add to dictionary
 UNSWcols = [0,1,2,3,11,45]
-
-NNcode.NNanalysis(path=r"DataSets\CIC-IDS-2017", header=0, indexCol=None, 
-                  mapped=attacksCIC, rowL=CICrows, Xmax=77, labelCol=78, attackNum=15)
-
-NNcode.NNanalysis(path=r"DataSets\UNSW-NB15", header=None, indexCol=None,
-                    mapped=mappingUNSW,rowL=UNSWcols, Xmax=44, labelCol=45, attackNum=10,
-                    dropFeats=[1,3], missReplacement=["Benign"],missCols=[47])
