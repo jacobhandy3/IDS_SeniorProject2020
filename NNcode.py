@@ -1,30 +1,66 @@
 from numpy import loadtxt
+from keras.optimizers import Adamax
 from keras.models import Sequential
-from keras.layers import Dense
+from keras.layers import Input, Dense, Dropout
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix
+import pandas as pd
+import numpy as np
+import tensorflow as tf
+import keras as k
+import glob as glob
+import os
+import matplotlib.pyplot as plt
 
-dataset = loadtxt('DataSets\CIC-IDS-2017\Tuesday-WorkingHours.pcap_ISCX (C).csv', delimiter=',')
-
-
-# split into input (X) and output (y) variables
-X = dataset[:,:78]
-y = dataset[:,78]
-
-
-# define the keras model
-model = Sequential()
-model.add(Dense(12, input_dim=78, activation='relu'))
-model.add(Dense(8, activation='relu'))
-model.add(Dense(1, activation='sigmoid'))
-
-
-# compile the keras model
-model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-
-
-# fit the keras model on the dataset
-model.fit(X, y, epochs=150, batch_size=10)
+def NNanalysis(dataset,Xmax,labelCol,attackNum):
+  
+    # split into input (X) and output (y) variables
+    print("Separating the data from the labels")
+    X = dataset.iloc[:,0:Xmax]
+    y = dataset.iloc[:,labelCol]
+    #split data with 0.32 test size
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.32)
+    print("Now onto the ML code")
 
 
-# evaluate the keras model
-_, accuracy = model.evaluate(X, y)
-print('Accuracy: %.2f' % (accuracy*100))
+    # define the keras model
+    model = Sequential()
+    model.add(Dense(39, input_dim=Xmax, activation='relu'))
+    model.add(Dropout(0.5))
+
+    model.add(Dense(26, activation='relu'))
+    model.add(Dropout(0.2))
+
+    model.add(Dense(15, activation='relu'))
+    model.add(Dropout(0.2))
+
+    model.add(Dense(attackNum, activation='softmax'))
+
+    # compile the keras model
+    model.compile(optimizer = Adamax(learning_rate=0.002, beta_1=0.9, beta_2=0.999, epsilon=1e-07),loss='sparse_categorical_crossentropy', metrics =['accuracy'])
+    bs = 25
+    # fit the keras model on the dataset
+    hist = model.fit(X_train, y_train, epochs=50, batch_size=bs, validation_data=(X_test,y_test))
+    #summarize history for accuracy
+    plt.plot(hist.history['accuracy'])
+    plt.plot(hist.history['val_accuracy'])
+    plt.title('model accuracy')
+    plt.ylabel('accuracy')
+    plt.xlabel('epoch')
+    plt.legend(['train','test'], loc='upper left')
+    plt.show()
+    #summarize history for loss
+    plt.plot(hist.history['loss'])
+    plt.plot(hist.history['val_loss'])
+    plt.title('model loss')
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc='upper left')
+    plt.show()
+    return X, model
+
+
+def predictM(rowNum, model):
+    pred = model.predict(rowNum)
+    print(pred)
