@@ -13,20 +13,18 @@ from KNN import KNNanalysis
 
 
 #UNSW-NB15 dataset
-path,header,indexCol,mapped,colL,Xmax,labelCol,attackNum,dropFeats,missReplacement,missCols=secondDataset()
-dataset2 = loadDataset(path=path,header=header,indexCol=indexCol,mapped=mapped,colL=colL, labelCol=labelCol,
-                                        dropFeats=dropFeats,missReplacement=missReplacement,missCols=missCols)
-NNanalysis(dataset=dataset2,Xmax=Xmax,labelCol=labelCol,attackNum=attackNum,batch=25,learn=0.0001)
-#NNanalysis(dataset=dataset2,Xmax=Xmax,labelCol=labelCol,attackNum=attackNum,batch=25,learn=0.0005)
-#NNanalysis(dataset=dataset2,Xmax=Xmax,labelCol=labelCol,attackNum=attackNum,batch=25,learn=0.001)
+#path,header,indexCol,mapped,colL,Xmax,labelCol,attackNum,dropFeats,missReplacement,missCols=secondDataset()
+#dataset2 = loadDataset(path=path,header=header,indexCol=indexCol,mapped=mapped,colL=colL, labelCol=labelCol,
+#                                        dropFeats=dropFeats,missReplacement=missReplacement,missCols=missCols)
+#NNanalysis(dataset=dataset2,Xmax=Xmax,labelCol=labelCol,attackNum=attackNum)
 
 #############################
 #      KNN Analysis
 #############################
 #CIC dataset
-#path,header,indexCol,mapped,colL,Xmax,labelCol,attackNum=firstDataset()
-#dataset1 = loadDataset(path=path,header=header,indexCol=indexCol,labelCol=labelCol,mapped=mapped,colL=colL)
-#KNNanalysis(dataset=dataset1,Xmax=Xmax,labelCol=labelCol)
+path,header,indexCol,mapped,colL,Xmax,labelCol,attackNum=firstDataset()
+dataset1 = loadDataset(path=path,header=header,indexCol=indexCol,labelCol=labelCol,mapped=mapped,colL=colL)
+KNNanalysis(dataset=dataset1,Xmax=Xmax,labelCol=labelCol)
 
 #UNSW-NB15 dataset
 #path, header, indexCol, mapped, colL, Xmax, labelCol, attackNum, dropFeats, missReplacement, missCols = secondDataset()

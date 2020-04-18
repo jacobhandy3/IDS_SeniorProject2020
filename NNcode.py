@@ -12,9 +12,8 @@ import keras as k
 import glob as glob
 import os
 import matplotlib.pyplot as plt
-import main
 
-def NNanalysis(path, header, indexCol, colL, Xmax,labelCol, attackNum, mapped=main.tempDict, dropFeats=[], missReplacement=[], missCols=[]):
+def NNanalysis(path, header, indexCol, mapped, colL, Xmax,labelCol, attackNum, dropFeats=[], missReplacement=[], missCols=[]):
     print("Pre-processing data...")
     #get formatted pandas dataset
     dataset = formatData(path, header, indexCol)
