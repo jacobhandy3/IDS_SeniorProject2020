@@ -72,13 +72,19 @@ def loadDataset(path, header, indexCol, colL,labelCol, mapped, dropFeats=[], mis
 
     #drop any row with a NaN
     dataset = dataset.dropna(how="any")
+    attackNames = []
+
     #Replaces attacks with numbers
     for columnL in colL:
         encodeData = LabelEncoder()
-        dataset.iloc[:,columnL] = encodeData.fit_transform(dataset.iloc[:,columnL]) #ADDED THIS CODE; AUTO GENERATES A NUMBERS FOR EACH STRING
+        #saves attack names to use it later to name each node class
+        if columnL == labelCol:
+            attackNames = dataset.iloc[:,columnL]
+        dataset.iloc[:,columnL] = encodeData.fit_transform(dataset.iloc[:,columnL]) 
+        
     
     print("done")
-    return dataset
+    return dataset, attackNames
 
 #takes existing map, pandas data frame, and list of columns to review
 def AddToMap(m, ds, cL):
