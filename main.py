@@ -36,21 +36,21 @@ def Run_DecisionTree(dataset,Xmax,attackNum,labelCol,attackNames):
 
     #Create and Printing Models, Appends predicted accuracies based on Criterion, Appends MaxDepth
     for MaxDepth in range(2,30):
-        path="/media/southpark86/AMG1/School/Spring 2020/Senior Project/DecionTreeResults/CICIDS Dataset/Criterion_Entropy/Splitter_Plus_treeDepth/Splitter_Best/"
-        Criterion='entropy'
-        name = 'CIC_Dataset_Features_Criterion_Entropy_Splitter_Random_TreeDepth_'+str(MaxDepth)+'.png'
-        name = path+name
-        #Creates Entropy Models and Prints MaxDepth < 10
-        pred_acc= decisionTree.CreateModel(MaxDepth=MaxDepth,Criterion=Criterion,X=X,
-                                                    X_train=X_train,y_train=y_train,X_test=X_test,y_test=y_test,
-                                                    name=name, attackNames=attackNames)
-        acc_gini.append(pred_acc)
-
         path="/media/southpark86/AMG1/School/Spring 2020/Senior Project/DecionTreeResults/CICIDS Dataset/Criterion_Gini/Splitter_Plus_treeDepth/Splitter_Best/"
         Criterion='gini'
         name = 'CIC_Dataset_Features_Criterion_Gini_Splitter_Random_TreeDepth_'+str(MaxDepth)+'.png'
         name = path+name
         #Creates Gini Models and Prints MaxDepth < 10
+        pred_acc= decisionTree.CreateModel(MaxDepth=MaxDepth,Criterion=Criterion,X=X,
+                                                    X_train=X_train,y_train=y_train,X_test=X_test,y_test=y_test,
+                                                    name=name, attackNames=attackNames)
+        acc_gini.append(pred_acc)
+
+        path="/media/southpark86/AMG1/School/Spring 2020/Senior Project/DecionTreeResults/CICIDS Dataset/Criterion_Entropy/Splitter_Plus_treeDepth/Splitter_Best/"
+        Criterion='entropy'
+        name = 'CIC_Dataset_Features_Criterion_Entropy_Splitter_Random_TreeDepth_'+str(MaxDepth)+'.png'
+        name = path+name
+        #Creates Entropy Models and Prints MaxDepth < 10
         pred_acc= decisionTree.CreateModel(MaxDepth=MaxDepth,Criterion=Criterion,X=X,X_train=X_train,y_train=y_train,X_test=X_test,y_test=y_test,name=name, attackNames=attackNames)
         
         acc_entropy.append(pred_acc)
