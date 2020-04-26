@@ -1,7 +1,7 @@
 from numpy import loadtxt
 from keras.optimizers import Adamax
 from keras.models import Sequential
-from keras.layers import Input, Dense
+from keras.layers import Input, Dense, Dropout
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
@@ -13,27 +13,7 @@ import glob as glob
 import os
 import matplotlib.pyplot as plt
 
-def NNanalysis(path, header, indexCol, mapped, colL, Xmax,labelCol, attackNum, dropFeats=[], missReplacement=[], missCols=[]):
-    print("Pre-processing data...")
-    #get formatted pandas dataset
-    dataset = formatData(path, header, indexCol)
-
-    #Drop columns not using
-    if(len(dropFeats) != 0):
-        dataset.drop(dropFeats, axis=1, inplace=True)
-    #Fill missing data with columns with missing data
-    if(len(missReplacement) != 0):
-        dataset = missData(dataset, missReplacement, missCols)
-    #find any labels and enumerate them
-    mapping = AddToMap(mapped, dataset, colL)
-    print("Replacing all strings...")
-    #replace all labels with a numeral assignment
-    for key in mapping:
-        dataset.replace(to_replace=key, value=mapping[key], inplace=True)
-    #replace the Infinity values with NaNs
-    dataset = dataset.replace(to_replace=np.inf, value=np.nan)
-    #drop any row with a NaN
-    dataset = dataset.dropna(how="any")
+def NNanalysis(path, dataset, Xmax, labelCol, attackNum):
     # split into input (X) and output (y) variables
     print("Separating the data from the labels")
     X = dataset.iloc[:,0:Xmax]
@@ -41,20 +21,24 @@ def NNanalysis(path, header, indexCol, mapped, colL, Xmax,labelCol, attackNum, d
     #split data with 0.32 test size
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.32)
     print("Now onto the ML code")
-
-
     # define the keras model
     model = Sequential()
-    model.add(Dense(39, input_dim=Xmax, activation='relu'))
-    model.add(Dense(26, activation='relu'))
-    model.add(Dense(15, activation='relu'))
+    model.add(Dense(30, input_dim=Xmax, activation='relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(20, activation='relu'))
+    model.add(Dropout(0.2))
+    model.add(Dense(10, activation='relu'))
+    model.add(Dropout(0.2))
+    model.add(Dense(attackNum, activation='relu'))
     model.add(Dense(attackNum, activation='softmax'))
 
     # compile the keras model
-    model.compile(optimizer = Adamax(learning_rate=0.002, beta_1=0.9, beta_2=0.999, epsilon=1e-07),loss='sparse_categorical_crossentropy', metrics =['accuracy'])
+    model.compile(optimizer = Adamax(learning_rate=0.0001, beta_1=0.9, beta_2=0.999, epsilon=1e-07),loss='sparse_categorical_crossentropy', metrics =['accuracy'])
     bs = 25
     # fit the keras model on the dataset
-    hist = model.fit(X, y, epochs=50, batch_size=bs, validation_data=(X_test,y_test))
+    hist = model.fit(X, y, epochs=25, batch_size=bs, validation_data=(X_test,y_test))
+    ACCf = path + "\ACCxEPOCH.png"
+    LOSSf = path + "\LOSSxEPOCH.png"
     #summarize history for accuracy
     plt.plot(hist.history['accuracy'])
     plt.plot(hist.history['val_accuracy'])
@@ -62,7 +46,7 @@ def NNanalysis(path, header, indexCol, mapped, colL, Xmax,labelCol, attackNum, d
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
     plt.legend(['train','test'], loc='upper left')
-    plt.show()
+    plt.savefig(ACCf)
     #summarize history for loss
     plt.plot(hist.history['loss'])
     plt.plot(hist.history['val_loss'])
@@ -70,7 +54,7 @@ def NNanalysis(path, header, indexCol, mapped, colL, Xmax,labelCol, attackNum, d
     plt.ylabel('loss')
     plt.xlabel('epoch')
     plt.legend(['train', 'test'], loc='upper left')
-    plt.show()
+    plt.savefig(LOSSf)
 
 #takes existing map, pandas data frame, and list of columns to review
 def AddToMap(m, ds, cL):

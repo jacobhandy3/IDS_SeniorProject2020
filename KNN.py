@@ -3,6 +3,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import metrics
 import matplotlib.pyplot as plt
+from math import sqrt
 
 def KNNanalysis(dataset, Xmax, labelCol):
     tf.compat.v1.disable_eager_execution()
@@ -12,16 +13,13 @@ def KNNanalysis(dataset, Xmax, labelCol):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.32)
     print("Now onto the ML code")
 
-    knnMD = KNeighborsClassifier(n_neighbors=3, algorithm="kd_tree",metric="manhattan")
+    n = X_train.shape[0]
+    print(str(round(sqrt(n/2))))
+    knnMD = KNeighborsClassifier(n_neighbors=round(sqrt(n)/2), algorithm="kd_tree",metric="manhattan")
     knnMD.fit(X_train, y_train)
     y_predBT = knnMD.predict(X_test)
     a2 = metrics.accuracy_score(y_test, y_predBT)
-    print("Accuracy(MD): " + str(a2))
-
-"""     plt.plot(x, y)
-    plt.xlabel("Value of K for KNN")
-    plt.ylabel("Testing Accuracy")
-    plt.show() """
+    print("Accuracy: " + str(a2))
 
 
 
