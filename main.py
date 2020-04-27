@@ -100,8 +100,6 @@ def Load_FourthDataSet():
 
 #Runs the Decision Tree File
 def Run_DecisionTree(dataset,Xmax,attackNum,labelCol,attackNames,dataName):
-    attackNames = attackNames.unique()
-
     #Split and Train Data
     X,y,X_train,y_train,X_test,y_test= decisionTree.trainModels(dataset,labelCol)
 
