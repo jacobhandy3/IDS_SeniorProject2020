@@ -30,8 +30,8 @@ def trainModels(dataset,labelCol):
 def CreateModel(MaxDepth,Criterion,X,X_train,y_train,X_test,y_test,name,attackNames):
     print("Now onto the ML code")
     print("Creating Models")
-    model = DecisionTreeClassifier(criterion=Criterion, splitter="best",
-                                        max_depth=MaxDepth)
+    model = DecisionTreeClassifier(criterion=Criterion, 
+                                        min_samples_split=MaxDepth)
     print("Classifier Done")
     
     #Training the decision tree classifier 
@@ -39,14 +39,15 @@ def CreateModel(MaxDepth,Criterion,X,X_train,y_train,X_test,y_test,name,attackNa
     print("Training Decision Tree Complete")
     #print specific trees, because png files cannot store too much data without sizing it down
     if MaxDepth<10:
-        printModels(model=model,X=X,name=name,attackNames=attackNames)
+        #printModels(model=model,X=X,name=name,attackNames=attackNames)
+        print('Nothig Printed')
     print("Training Complete")
 
     #Predicting test Accuracies
     pred =  model.predict(X_test)
     pred_acc= accuracy_score(y_test, pred)
-    print('Accuracy Score on train data: ', accuracy_score(y_true=y_train, y_pred=model.predict(X_train)))
-    print('Accuracy Score on test data: ', accuracy_score(y_true=y_test, y_pred=pred))
+    #print('Accuracy Score on train data: ', accuracy_score(y_true=y_train, y_pred=model.predict(X_train)))
+    #print('Accuracy Score on test data: ', accuracy_score(y_true=y_test, y_pred=pred))
 
     return pred_acc
 
