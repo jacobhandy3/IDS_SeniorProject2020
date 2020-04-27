@@ -4,6 +4,9 @@ import load_Dataset
 import numpy
 import pandas as pd
 import matplotlib.pyplot as plt
+
+filePath=r"/media/southpark86/AMG1/School/Spring 2020/Senior Project/DataSets/"
+
 #Saves CIC dataset
 def SaveDataSet1():
     path,header,indexCol,mapped,colL,Xmax,labelCol,attackNum=load_Dataset.firstDataset()
@@ -13,8 +16,9 @@ def SaveDataSet1():
 
 #Saves UNSW-NB15 dataset
 def SaveDataSet2():
-    path,header,indexCol,mapped,colL,Xmax,labelCol,attackNum=load_Dataset.firstDataset()
-    dataset,attackNames = load_Dataset.loadDataset(path=path,header=header,indexCol=indexCol,labelCol=labelCol,mapped=mapped,colL=colL)
+    path,header,indexCol,mapped,colL,Xmax,labelCol,attackNum,dropFeats,missReplacement,missCols=load_Dataset.secondDataset()
+    dataset,attackNames = load_Dataset.loadDataset(path=path,header=header,indexCol=indexCol,labelCol=labelCol,mapped=mapped,colL=colL,
+                                            dropFeats=dropFeats,missReplacement=missReplacement,missCols=missCols)    
     dataset.to_csv("/media/southpark86/AMG1/School/Spring 2020/Senior Project/DataSets/secondDataSet.csv")
     attackNames.to_csv("/media/southpark86/AMG1/School/Spring 2020/Senior Project/DataSets/secondDataSetAttackNames.csv")
 
@@ -28,7 +32,7 @@ def SaveDataSet3():
 
 #Saves DDOS16 dataset
 def SaveDataSet4():
-    path,header,indexCol,mapped,colL,Xmax,labelCol,attackNum=load_Dataset.firstDataset()
+    path,header,indexCol,mapped,colL,Xmax,labelCol,attackNum=load_Dataset.fourthDataset()
     dataset,attackNames = load_Dataset.loadDataset(path=path,header=header,indexCol=indexCol,labelCol=labelCol,mapped=mapped,colL=colL)
     dataset.to_csv("/media/southpark86/AMG1/School/Spring 2020/Senior Project/DataSets/fourthDataSet.csv")
     attackNames.to_csv("/media/southpark86/AMG1/School/Spring 2020/Senior Project/DataSets/fourthDataSetAttackNames.csv")
@@ -37,17 +41,45 @@ def SaveDataSet4():
 def Load_First_DataSet():
     path,header,indexCol,mapped,colL,Xmax,labelCol,attackNum=load_Dataset.firstDataset()
 
+    #Loading Saved CSV    
+    fileP = filePath+"First_Data_Set/firstDataSet.csv"
+    dataset = pd.read_csv(fileP, header=header, index_col=indexCol)
+    dataset = dataset.drop(dataset.columns[0],axis=1)
+    fileP = filePath+"First_Data_Set/firstDataSetAttackNames.csv"
+    attackNames = pd.read_csv(fileP, header=header, index_col=indexCol)
+    attackNames = attackNames.iloc[:,1]
+    attackNames = attackNames.unique()
+    
     return dataset,Xmax,attackNum,labelCol,attackNames
 
 #Loads UNSW-NB15 dataset
 def Load_SecondDataSet():
     path,header,indexCol,mapped,colL,Xmax,labelCol,attackNum,dropFeats,missReplacement,missCols=load_Dataset.secondDataset()
+    #Loading Saved CSV    
+    fileP = filePath+"Second_Data_Set/secondDataSet.csv"
+    dataset = pd.read_csv(fileP, header=header, index_col=indexCol)
+    dataset = dataset.drop(dataset.columns[0],axis=1)
+    fileP = filePath+"Second_Data_Set/secondDataSetAttackNames.csv"
+    attackNames = pd.read_csv(fileP, header=header, index_col=indexCol)
+    attackNames = attackNames.iloc[:,1]
+    attackNames = attackNames.unique()
+    
 
+    print(dataset)
     return dataset,Xmax,attackNum,labelCol, attackNames
 
 #Loads CIDDS dataset
 def Load_ThirdDataSet():
     path,header,indexCol,mapped,colL,Xmax,labelCol,attackNum,dropFeats,missReplacement,missCols=load_Dataset.thirdDataset()
+    
+    #Loading Saved CSV    
+    fileP = filePath+"Third_Data_Set/thirdDataSet.csv"
+    dataset = pd.read_csv(fileP, header=header, index_col=indexCol)
+    dataset = dataset.drop(dataset.columns[0],axis=1)
+    fileP = filePath+"Third_Data_Set/thirdDataSetAttackNames.csv"
+    attackNames = pd.read_csv(fileP, header=header, index_col=indexCol)
+    attackNames = attackNames.iloc[:,1]
+    attackNames = attackNames.unique()
     
     return dataset,Xmax,attackNum,labelCol,attackNames
 
@@ -55,6 +87,15 @@ def Load_ThirdDataSet():
 def Load_FourthDataSet():
     path,header,indexCol,mapped,colL,Xmax,labelCol,attackNum=load_Dataset.fourthDataset()
 
+    #Loading Saved CSV    
+    fileP = filePath+"Fourth_Data_Set/fourthDataSet.csv"
+    dataset = pd.read_csv(fileP, header=header, index_col=indexCol)
+    dataset = dataset.drop(dataset.columns[0],axis=1)
+    fileP = filePath+"Fourth_Data_Set/fourthDataSetAttackNames.csv"
+    attackNames = pd.read_csv(fileP, header=header, index_col=indexCol)
+    attackNames = attackNames.iloc[:,1]
+    attackNames = attackNames.unique()
+    
     return dataset,Xmax,attackNum,labelCol,attackNames
 
 #Runs the Decision Tree File
@@ -71,7 +112,7 @@ def Run_DecisionTree(dataset,Xmax,attackNum,labelCol,attackNames,dataName):
 
     #Create and Printing Models, Appends predicted accuracies based on Criterion, Appends MaxDepth
     #Paths changed according to tested parameters
-    #Max Depth change according to stopping criteria (max_depth: range(1,31), min_samples_split: range((50,1501,50)), min_samples_leaf: range(5,301,5), max_leaf_nodes)
+    #Max Depth change according to stopping criteria (max_depth: range(1,31), min_samples_split: range(1000,30001,1000), min_samples_leaf: range(5,301,5), max_leaf_nodes)
     for MaxDepth in range(1000,30001,1000):
         path="/media/southpark86/AMG1/School/Spring 2020/Senior Project/IDS_SeniorProject2020/DecionTreeResults/"+dataName+" Dataset/Criterion_Gini/Min_Sample_Split/"
         Criterion='gini'
@@ -116,16 +157,16 @@ def Run_DecisionTree(dataset,Xmax,attackNum,labelCol,attackNames,dataName):
 #SaveDataSet4()
 
 #Loaded 1st Dataset
-#dataset,Xmax,attackNum,labelCol,attackNames=Load_First_DataSet()
+dataset,Xmax,attackNum,labelCol,attackNames=Load_First_DataSet()
 #Ran Decision Tree
-#Run_DecisionTree(dataset=dataset,Xmax=Xmax,attackNum=attackNum,labelCol=labelCol,attackNames=attackNames,dataName="CICIDS")
-#print("FINISHED FIRST DATASET")
+Run_DecisionTree(dataset=dataset,Xmax=Xmax,attackNum=attackNum,labelCol=labelCol,attackNames=attackNames,dataName="CICIDS")
+print("FINISHED FIRST DATASET")
 
 #Loaded 2nd Dataset
-#dataset,Xmax,attackNum,labelCol,attackNames=Load_SecondDataSet()
+dataset,Xmax,attackNum,labelCol,attackNames=Load_SecondDataSet()
 #Ran Decision Tree
-#Run_DecisionTree(dataset=dataset,Xmax=Xmax,attackNum=attackNum,labelCol=labelCol,attackNames=attackNames,dataName="UNSW")
-#print("FINISHED SECOND DATASET")
+Run_DecisionTree(dataset=dataset,Xmax=Xmax,attackNum=attackNum,labelCol=labelCol,attackNames=attackNames,dataName="UNSW")
+print("FINISHED SECOND DATASET")
 
 #Loaded 3rd Dataset
 #dataset,Xmax,attackNum,labelCol,attackNames=Load_ThirdDataSet()
@@ -134,7 +175,7 @@ def Run_DecisionTree(dataset,Xmax,attackNum,labelCol,attackNames,dataName):
 #print("FINISHED THIRD DATASET")
 
 #Loaded 4th Dataset
-#dataset,Xmax,attackNum,labelCol,attackNames=Load_FourthDataSet()
+dataset,Xmax,attackNum,labelCol,attackNames=Load_FourthDataSet()
 #Ran Decision Tree
-#Run_DecisionTree(dataset=dataset,Xmax=Xmax,attackNum=attackNum,labelCol=labelCol,attackNames=attackNames,dataName="DDOS16")
-#print("FINISHED FORTH DATASET")
+Run_DecisionTree(dataset=dataset,Xmax=Xmax,attackNum=attackNum,labelCol=labelCol,attackNames=attackNames,dataName="DDOS16")
+print("FINISHED FORTH DATASET")
