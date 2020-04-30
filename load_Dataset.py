@@ -136,6 +136,44 @@ def loadThirdDataset(path, header, indexCol, colL,labelCol, mapped, dropFeats=[]
     dataset["Bytes"] = dataset["Bytes"].astype(float)
     return dataset,attackNames
 
+#Laods Previously Saved Dataframes
+def Load_Saved_Data_Set(DataSetNumber):
+    filePath=r"/media/southpark86/AMG1/School/Spring 2020/Senior Project/DataSets/"
+    #dataset=pd.DataFrame()
+    #attackNames=pd.DataFrame()
+    #labelCol=0
+    if DataSetNumber == 1 or DataSetNumber == 4:
+        path,header,indexCol,mapped,colL,Xmax,labelCol,attackNum= firstDataset() if DataSetNumber==1 else fourthDataset()
+        data_set_path = filePath+"First_Data_Set/firstDataSet.csv" if DataSetNumber==1 else filePath+"Fourth_Data_Set/fourthDataSet.csv"
+        attack_names_path = filePath+"First_Data_Set/firstDataSetAttackNames.csv" if DataSetNumber==1 else filePath+"Fourth_Data_Set/fourthDataSetAttackNames.csv"
+    else:
+        path,header,indexCol,mapped,colL,Xmax,labelCol,attackNum,dropFeats,missReplacement,missCols=secondDataset() if DataSetNumber == 2 else thirdDataset()
+        data_set_path = filePath+"Second_Data_Set/secondDataSet.csv" if DataSetNumber==2 else filePath+"Third_Data_Set/thirdDataSet.csv"
+        attack_names_path =  filePath+"Second_Data_Set/secondDataSetAttackNames.csv" if DataSetNumber==2 else filePath+"Third_Data_Set/thirdDataSetAttackNames.csv"
+    
+    #if DataSetNumber != 3:
+    #Loading Saved CSV    
+    dataset = pd.read_csv(data_set_path, header=header, index_col=indexCol)
+    dataset = dataset.drop(dataset.columns[0],axis=1)
+
+    attackNames = pd.read_csv(attack_names_path, header=header, index_col=indexCol)
+    attackNames = attackNames.iloc[:,1]
+    attackNames = attackNames.unique()
+
+    return dataset,list(attackNames),labelCol
+
+def load_load(path, header, indexCol, colL,labelCol, mapped, dropFeats=[], missReplacement=[], missCols=[]):
+    dataset = pd.read_csv(path, header=header, index_col=indexCol)
+    dataset = dataset.drop(dataset.columns[0],axis=1)
+    #Drop columns not using
+    if(len(dropFeats) != 0):
+        dataset.drop(labels=dropFeats, axis=1, inplace=True)
+    #Fill missing data with columns with missing data
+    if(len(missReplacement) != 0):
+        dataset = missData(dataset, missReplacement, missCols)
+    
+    return dataset
+
 #takes existing map, pandas data frame, and list of columns to review
 def AddToMap(m, ds, cL):
     i = 0
