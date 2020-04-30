@@ -3,7 +3,20 @@ import decisionTree
 import load_Dataset
 import numpy
 import pandas as pd
-import matplotlib.pyplot as plt
+#Criteria for each Testing Parameters
+Criterion = ['entropy', 'gini']
+Test0 = {'MaxDepth': range(1,31),'Impurity': 0.0,'MaxLeaf': None,'MinSampSplit':2,'MinSampLeaf':1,'Name': "Max_Depth",'Table_Name': "Max_Depth",'TwoParameters': False}
+Test1 = {'MaxDepth': None,'Impurity': 0.0,'MaxLeaf': range(2,31),'MinSampSplit':2,'MinSampLeaf':1,'Name': "Max_Leaf_Nodes",'Table_Name': "Max_Leaf_Nodes",'TwoParameters': False}
+Test2 = {'MaxDepth': None,'Impurity': [.00005,.0001,.0005,.001,.005,.01,.05,.1,.5,1],'MaxLeaf': None,'MinSampSplit':2,'MinSampLeaf':1,'Name': "Impurity_Decreased",'Table_Name': "Impurity_Decreased",'TwoParameters': False}
+Test3 = {'MaxDepth': range(1,31),'Impurity': [.00005,.0001,.0005,.001,.005],'MaxLeaf': None,'MinSampSplit':2,'MinSampLeaf':1,'Name': "Impurity_Decreased_Plus_Max_Depth",'Table_Name': "Max_Depth",'TwoParameters': True}
+Test4 = {'MaxDepth': None,'Impurity': [.00005,.0001,.0005,.001,.005],'MaxLeaf': range(2,31),'MinSampSplit':2,'MinSampLeaf':1,'Name': "Impurity_Decreased_Plus_Max_Leaf_Nodes",'Table_Name': "Max_Leaf_Nodes",'TwoParameters': True}
+
+Test5 = {'MaxDepth': None,'Impurity': 0.0,'MaxLeaf': None,'MinSampSplit':2,'MinSampLeaf':range(50,1501,50),'Name': "Min_Samples_Leaf",'Table_Name': "Min_Samples_Leaf",'TwoParameters': False}
+Test6 = {'MaxDepth': None,'Impurity': 0.0,'MaxLeaf': None,'MinSampSplit':range(50,1501,50),'MinSampLeaf':1,'Name': "Min_Samples_Split",'Table_Name': "Min_Samples_Split",'TwoParameters': False}
+Test7 = {'MaxDepth': None,'Impurity': [.00005,.0001,.0005,.001,.005],'MaxLeaf': None,'MinSampSplit':2,'MinSampLeaf':range(50,1501,50),'Name': "Impurity_Decreased_Plus_Min_Samples_Leaf",'Table_Name': "Min_Samples_Leaf",'TwoParameters': True}
+Test8 = {'MaxDepth': None,'Impurity': [.00005,.0001,.0005,.001,.005],'MaxLeaf': None,'MinSampSplit':range(50,1501,50),'MinSampLeaf':1,'Name': "Impurity_Decreased_Plus_Min_Samples_Split",'Table_Name': "Min_Samples_Split",'TwoParameters': True}
+
+Test_List = [Test0,Test1,Test2,Test3,Test4,Test5,Test6,Test7,Test8]
 
 filePath=r"/media/southpark86/AMG1/School/Spring 2020/Senior Project/DataSets/"
 
@@ -37,143 +50,46 @@ def SaveDataSet4():
     dataset.to_csv("/media/southpark86/AMG1/School/Spring 2020/Senior Project/DataSets/fourthDataSet.csv")
     attackNames.to_csv("/media/southpark86/AMG1/School/Spring 2020/Senior Project/DataSets/fourthDataSetAttackNames.csv")
 
-#Loads CIC dataset
-def Load_First_DataSet():
-    path,header,indexCol,mapped,colL,Xmax,labelCol,attackNum=load_Dataset.firstDataset()
-
-    #Loading Saved CSV    
-    fileP = filePath+"First_Data_Set/firstDataSet.csv"
-    dataset = pd.read_csv(fileP, header=header, index_col=indexCol)
-    dataset = dataset.drop(dataset.columns[0],axis=1)
-    fileP = filePath+"First_Data_Set/firstDataSetAttackNames.csv"
-    attackNames = pd.read_csv(fileP, header=header, index_col=indexCol)
-    attackNames = attackNames.iloc[:,1]
-    attackNames = attackNames.unique()
-    
-    return dataset,Xmax,attackNum,labelCol,attackNames
-
-#Loads UNSW-NB15 dataset
-def Load_SecondDataSet():
-    path,header,indexCol,mapped,colL,Xmax,labelCol,attackNum,dropFeats,missReplacement,missCols=load_Dataset.secondDataset()
-    #Loading Saved CSV    
-    fileP = filePath+"Second_Data_Set/secondDataSet.csv"
-    dataset = pd.read_csv(fileP, header=header, index_col=indexCol)
-    dataset = dataset.drop(dataset.columns[0],axis=1)
-    fileP = filePath+"Second_Data_Set/secondDataSetAttackNames.csv"
-    attackNames = pd.read_csv(fileP, header=header, index_col=indexCol)
-    attackNames = attackNames.iloc[:,1]
-    attackNames = attackNames.unique()
-    
-
-    print(dataset)
-    return dataset,Xmax,attackNum,labelCol, attackNames
-
 #Loads CIDDS dataset
 def Load_ThirdDataSet():
     path,header,indexCol,mapped,colL,Xmax,labelCol,attackNum,dropFeats,missReplacement,missCols=load_Dataset.thirdDataset()
     
     #Loading Saved CSV    
     fileP = filePath+"Third_Data_Set/thirdDataSet.csv"
-    dataset = pd.read_csv(fileP, header=header, index_col=indexCol)
-    dataset = dataset.drop(dataset.columns[0],axis=1)
+    dataset = load_Dataset.load_load(path=fileP,header=header,indexCol=indexCol,mapped=mapped,colL=colL, labelCol=labelCol,
+                                        dropFeats=dropFeats,missReplacement=missReplacement,missCols=missCols)
+    
+
     fileP = filePath+"Third_Data_Set/thirdDataSetAttackNames.csv"
     attackNames = pd.read_csv(fileP, header=header, index_col=indexCol)
     attackNames = attackNames.iloc[:,1]
     attackNames = attackNames.unique()
-    
+    print(dataset)
     return dataset,Xmax,attackNum,labelCol,attackNames
 
-#Loads DDOS16 dataset
-def Load_FourthDataSet():
-    path,header,indexCol,mapped,colL,Xmax,labelCol,attackNum=load_Dataset.fourthDataset()
-
-    #Loading Saved CSV    
-    fileP = filePath+"Fourth_Data_Set/fourthDataSet.csv"
-    dataset = pd.read_csv(fileP, header=header, index_col=indexCol)
-    dataset = dataset.drop(dataset.columns[0],axis=1)
-    fileP = filePath+"Fourth_Data_Set/fourthDataSetAttackNames.csv"
-    attackNames = pd.read_csv(fileP, header=header, index_col=indexCol)
-    attackNames = attackNames.iloc[:,1]
-    attackNames = attackNames.unique()
-    
-    return dataset,Xmax,attackNum,labelCol,attackNames
-
-#Runs the Decision Tree File
-def Run_DecisionTree(dataset,Xmax,attackNum,labelCol,attackNames,dataName):
-    #Split and Train Data
-    X,y,X_train,y_train,X_test,y_test= decisionTree.trainModels(dataset,labelCol)
-
-    #plot gini vs entropy accuracies
-    max_depth = []
-    acc_gini = []
-    acc_entropy = []
-
-    #Create and Printing Models, Appends predicted accuracies based on Criterion, Appends MaxDepth
-    #Paths changed according to tested parameters
-    #Max Depth change according to stopping criteria (max_depth: range(1,31), min_samples_split: range(1000,30001,1000), min_samples_leaf: range(5,301,5), max_leaf_nodes)
-    for MaxDepth in range(1000,30001,1000):
-        path="/media/southpark86/AMG1/School/Spring 2020/Senior Project/IDS_SeniorProject2020/DecionTreeResults/"+dataName+" Dataset/Criterion_Gini/Min_Sample_Split/"
-        Criterion='gini'
-        name = dataName+'_Dataset_Features_Criterion_Gini_Min_Sample_Split_'+str(MaxDepth)+'.png'
-        name = path+name
-        #Creates Gini Models and Prints MaxDepth < 10
-        pred_acc= decisionTree.CreateModel(MaxDepth=MaxDepth,Criterion=Criterion,X=X,
-                                                    X_train=X_train,y_train=y_train,X_test=X_test,y_test=y_test,
-                                                    name=name, attackNames=attackNames)
-        acc_gini.append(pred_acc)
-
-        path="/media/southpark86/AMG1/School/Spring 2020/Senior Project/IDS_SeniorProject2020/DecionTreeResults/"+dataName+" Dataset/Criterion_Entropy/Min_Sample_Split/"
-        Criterion='entropy'
-        name = dataName+'_Dataset_Features_Criterion_Entropy_Min_Sample_Split_'+str(MaxDepth)+'.png'
-        name = path+name
-        #Creates Entropy Models and Prints MaxDepth < 10
-        pred_acc= decisionTree.CreateModel(MaxDepth=MaxDepth,Criterion=Criterion,X=X,X_train=X_train,y_train=y_train,X_test=X_test,y_test=y_test,name=name, attackNames=attackNames)
-        
-        acc_entropy.append(pred_acc)
-        max_depth.append(MaxDepth)
-        print("MaxDepth: ",MaxDepth)
-
-    #stores the both gini and entropy accuraccies into a dataframe to use to plot the accuracies
-    d = pd.DataFrame({'acc_gini':pd.Series(acc_gini), 
-            'acc_entropy':pd.Series(acc_entropy),
-            'max_depth':pd.Series(max_depth)})
-    # plots gini accuracies vs entropy accuracies graph, Saves plot diagram in Dataset Folder
-    fig = plt.figure()
-    plt.plot('max_depth','acc_gini', data=d, label='gini')
-    plt.plot('max_depth','acc_entropy', data=d, label='entropy')
-    plt.xlabel('min_samples_split')
-    plt.ylabel('accuracy')
-    plt.title('Gini vs Entropy - Accuracy vs Min_Samples_Split')
-    plt.legend()
-    #plt.show()
-    figPath="/media/southpark86/AMG1/School/Spring 2020/Senior Project/IDS_SeniorProject2020/DecionTreeResults/"+dataName+" Dataset/Gini_vs_Entropy_Accuracies_Graphs/"
-    fig.savefig(figPath+'Gini_vs_Entropy_Feature_Min_Samples_Split.png')
 
 #SaveDataSet1()
 #SaveDataSet2()
 #SaveDataSet3()
 #SaveDataSet4()
 
-#Loaded 1st Dataset
-dataset,Xmax,attackNum,labelCol,attackNames=Load_First_DataSet()
-#Ran Decision Tree
-Run_DecisionTree(dataset=dataset,Xmax=Xmax,attackNum=attackNum,labelCol=labelCol,attackNames=attackNames,dataName="CICIDS")
-print("FINISHED FIRST DATASET")
+def Run_Test():
+    #Load Datasets
+    #Test Datasets: 2
+    #Needs Testing: 1,3
+    for LoopNum in [4]:
+        dataset,attackNames,labelCol=load_Dataset.Load_Saved_Data_Set(LoopNum)
+        data_name = "UNSW" if (LoopNum == 2) else ("DDOS16" if (LoopNum == 4) else ("CICIDS" if (LoopNum == 1) else "CIDDS"))
+        #Run Decision Tree
+        for Test_Num in [Test7,Test8]:
+            decisionTree.Run_DecisionTree(dataset=dataset,attackNames=attackNames,labelCol=labelCol,Criterion=Criterion,dataName=data_name,Test_Data=Test_Num)
+        print("FINISHED DATASET: "+str(LoopNum))
 
-#Loaded 2nd Dataset
-dataset,Xmax,attackNum,labelCol,attackNames=Load_SecondDataSet()
-#Ran Decision Tree
-Run_DecisionTree(dataset=dataset,Xmax=Xmax,attackNum=attackNum,labelCol=labelCol,attackNames=attackNames,dataName="UNSW")
-print("FINISHED SECOND DATASET")
+Run_Test()
 
-#Loaded 3rd Dataset
-#dataset,Xmax,attackNum,labelCol,attackNames=Load_ThirdDataSet()
+
+#Loaded 3nd Dataset
+#dataset,Xmax,attackNum,labelCol,attackNames=Load_SecondDataSet()
 #Ran Decision Tree
 #Run_DecisionTree(dataset=dataset,Xmax=Xmax,attackNum=attackNum,labelCol=labelCol,attackNames=attackNames,dataName="CIDDS")
-#print("FINISHED THIRD DATASET")
-
-#Loaded 4th Dataset
-dataset,Xmax,attackNum,labelCol,attackNames=Load_FourthDataSet()
-#Ran Decision Tree
-Run_DecisionTree(dataset=dataset,Xmax=Xmax,attackNum=attackNum,labelCol=labelCol,attackNames=attackNames,dataName="DDOS16")
-print("FINISHED FORTH DATASET")
+#print("FINISHED SECOND DATASET")
