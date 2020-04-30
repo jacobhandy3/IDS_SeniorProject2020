@@ -75,13 +75,11 @@ def Load_ThirdDataSet():
 
 def Run_Test():
     #Load Datasets
-    #Test Datasets: 2
-    #Needs Testing: 1,3
-    for LoopNum in [4]:
+    for LoopNum in range(1-5):
         dataset,attackNames,labelCol=load_Dataset.Load_Saved_Data_Set(LoopNum)
         data_name = "UNSW" if (LoopNum == 2) else ("DDOS16" if (LoopNum == 4) else ("CICIDS" if (LoopNum == 1) else "CIDDS"))
         #Run Decision Tree
-        for Test_Num in [Test7,Test8]:
+        for Test_Num in Test_List:
             decisionTree.Run_DecisionTree(dataset=dataset,attackNames=attackNames,labelCol=labelCol,Criterion=Criterion,dataName=data_name,Test_Data=Test_Num)
         print("FINISHED DATASET: "+str(LoopNum))
 
